@@ -223,7 +223,7 @@ if __name__ == '__main__':
     parser.add_argument('--lr', type=float, default=1e-1)
     parser.add_argument('--momentum', type=float, default=0.9)
     parser.add_argument('--weight_decay', type=float, default=1e-4)
-    parser.add_argument('--epochs', type=int, default=3)
+    parser.add_argument('--epochs', type=int, default=500)
     
     # Training args
     parser.add_argument('--batch_size', type=int, default=128)
