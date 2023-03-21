@@ -1,6 +1,9 @@
 # LMVCAT
 Code for paper: Incomplete Multi-View Multi-Label Learning via Label-Guided Masked View and Category-Aware Transformers
 
+
+You can run 'python main.py' for a demo!
+
 If this code is helpful to you, please cite following paper:
 
 @article{liu2023incomplete,
