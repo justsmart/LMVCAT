@@ -4,25 +4,7 @@ import torch
 import numpy as np
 from sklearn.preprocessing import StandardScaler, MinMaxScaler, normalize, scale
 import math,random
-# def loadMvSlDataFromMat(mat_path):
-#     data = scipy.io.loadmat(mat_path)
-#     mv_data = data['X'][0]
-#     mv_data = [StandardScaler().fit_transform(v_data.astype(np.float32)) for v_data in mv_data]
-#     if 'Y' in data.keys():
-#         label = data['Y']
-#     elif 'gt' in data.keys():
-#         label = data['gt']
-#     elif 'truth' in data.keys():
-#         label = data['truth']
-#     else :
-#         raise ValueError('no label index key!!!',data.keys())
-#     labels = labels.astype(np.float32)
 
-#     if label.shape[0]!=mv_data[0].shape[0]:
-#         for v in range(len(mv_data)):
-#             mv_data[v] = mv_data[v].T
-#             assert mv_data[v].shape[0]==label.shape[0]
-#     return mv_data,label
 
 def loadMvMlDataFromMat(mat_path):
     data = scipy.io.loadmat(mat_path)
@@ -72,8 +54,6 @@ def loadMfDIMvMlDataFromMat(mat_path, fold_mat_path,fold_idx=0):
         labels = labels.T
     assert mv_data[0].shape[0]==labels.shape[0]==total_sample_num
     
-
-
     folds_data = datafold['folds_data']
     folds_label = datafold['folds_label']
     folds_sample_index = datafold['folds_sample_index']
@@ -86,28 +66,15 @@ def loadMfDIMvMlDataFromMat(mat_path, fold_mat_path,fold_idx=0):
 
     assert inc_view_indicator.shape[0]==inc_label_indicator.shape[0]==sample_index.shape[0]==labels.shape[0]
     # incomplete data construction and normalization
-    inc_mv_data = [(StandardScaler().fit_transform(v_data.astype(np.float32))*inc_view_indicator[:,v:v+1]) for v,v_data in enumerate(mv_data)]
+    nor_mv_data = [(StandardScaler().fit_transform(v_data.astype(np.float32))) for v,v_data in enumerate(mv_data)]
+    inc_mv_data = [np.random.randn(v_data.shape[0],v_data.shape[1]) for v_data in nor_mv_data]
+    for v,v_data in enumerate(nor_mv_data):
+        inc_mv_data[v][inc_view_indicator[:,v]==1,:] = v_data[inc_view_indicator[:,v]==1,:].copy()
     # incomplete label construction
     inc_labels = labels*inc_label_indicator
     # delete data with all zero label 
     ind00 = labels.sum(axis=1)==0
-    # inc_mv_data = [np.delete(v_data, ind00,axis=0) for v_data in inc_mv_data]
-    # mv_data = [np.delete(v_data, ind00,axis=0) for v_data in mv_data]
-    # labels = np.delete(labels,ind00,axis=0)   
-    # inc_labels = np.delete(inc_labels,ind00,axis=0)   
-    # inc_view_indicator = np.delete(inc_view_indicator,ind00,axis=0)
-    # inc_label_indicator = np.delete(inc_label_indicator,ind00,axis=0)
-    # total_sample_num = labels.shape[0]
 
-    # print('zerolabel:',(labels.sum(-1)==2).sum())
-    # confirm the incomplete setting!
-    # print('inc_view_indicator',inc_view_indicator[0:5,0])
-    # print('inc_mv_data',inc_mv_data[0][0:5,1])
-    # print('labels->inc_label_index',labels[0,0:6],inc_label_indicator[0,0:6])
-    # print('inc_labels',inc_labels[0,0:6])
-    # print('inc_label==label?',np.array_equal(inc_labels,labels))
-    # print('inc_mv_data==mv_data?',[np.array_equal(v_data,inc_mv_data[v]) for v,v_data in enumerate(mv_data)])
-    # for 
 
     return inc_mv_data,inc_labels,labels,inc_view_indicator,inc_label_indicator,total_sample_num
     
@@ -155,6 +122,7 @@ class IncDataset(Dataset):
             self.cur_labels = inc_labels[:self.train_sample_num]
             self.cur_inc_V_ind = inc_V_ind[:self.train_sample_num]
             self.cur_inc_L_ind = inc_L_ind[:self.train_sample_num]
+            
         elif mode=='val':
             self.cur_mv_data = [v_data[self.train_sample_num:self.train_sample_num+self.val_sample_num] for v_data in inc_mv_data]
             self.cur_labels = labels[self.train_sample_num:self.train_sample_num+self.val_sample_num]
