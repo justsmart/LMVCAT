@@ -12,7 +12,8 @@ If this code is helpful to you, please cite the following paper:
   booktitle={Proceedings of the AAAI Conference on Artificial Intelligence},
   year={2023},
   volume={37},
-  number={7}
+  number={7},
+  pages={8816--8824}
 }
 ```
 
