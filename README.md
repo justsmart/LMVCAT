@@ -5,7 +5,7 @@ Code for paper: Incomplete Multi-View Multi-Label Learning via Label-Guided Mask
 You can run 'python main.py' for a demo!
 
 If this code is helpful to you, please cite the following paper:
-'''bibtex
+```bibtex
 @inproceedings{liu2023incomplete,
   title={Incomplete Multi-View Multi-Label Learning via Label-Guided Masked View- and Category-Aware Transformers},
   author={Liu, Chengliang and Wen, Jie and Luo, Xiaoling and Xu, Yong},
@@ -14,7 +14,7 @@ If this code is helpful to you, please cite the following paper:
   volume={37},
   number={7}
 }
-'''
+```
 
 
 Please get in touch with me if you have any questions about running this code!
